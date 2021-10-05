@@ -18,10 +18,10 @@ namespace Tgs.Core.Infrastructures.Security
         /// It will use onError implementation by default when onExpired is null,
         /// if onError is null, means all errors will be passed.
         /// </remarks>
-        (bool IsValid, ClaimsPrincipal ClaimsPrincipal, SecurityToken ValidatedToken) ValidateToken(
+        (bool IsValid, ClaimsPrincipal? ClaimsPrincipal, SecurityToken? ValidatedToken) ValidateToken(
             string token,
             TokenValidationParameters parameters,
-            Action<Exception> onError,
-            Action<SecurityTokenExpiredException> onExpired = null);
+            Action<Exception>? onError,
+            Action<SecurityTokenExpiredException>? onExpired = null);
     }
 }

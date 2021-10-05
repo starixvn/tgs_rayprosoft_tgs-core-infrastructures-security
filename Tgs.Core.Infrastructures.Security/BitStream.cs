@@ -3,7 +3,7 @@ using System.IO;
 
 namespace Tgs.Core.Infrastructures.Security
 {
-    public class BitStream : Stream
+    internal class BitStream : Stream
     {
         /// <summary>
         /// Initialize the stream with capacity
@@ -23,8 +23,6 @@ namespace Tgs.Core.Infrastructures.Security
             Source = source;
         }
 
-        private byte[] Source { get; }
-
         public override bool CanRead => true;
 
         public override bool CanSeek => true;
@@ -40,6 +38,8 @@ namespace Tgs.Core.Infrastructures.Security
         /// Bit position of the stream
         /// </summary>
         public override long Position { get; set; }
+
+        private byte[] Source { get; }
 
         public override void Flush() => throw new NotImplementedException();
 

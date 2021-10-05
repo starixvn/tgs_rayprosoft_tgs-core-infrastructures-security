@@ -6,6 +6,6 @@ namespace Tgs.Core.Infrastructures.Security
     {
         ValueTask<string> EncryptAsync<T>(T data);
 
-        ValueTask<T> DecryptAsync<T>(string token);
+        ValueTask<T?> DecryptAsync<T>(string token);
     }
 }

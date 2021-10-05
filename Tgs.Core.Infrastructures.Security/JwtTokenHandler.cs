@@ -32,10 +32,10 @@ namespace Tgs.Core.Infrastructures.Security
         public JwtSecurityToken ReadToken(string token) =>
             _handler.ReadJwtToken(token);
 
-        public (bool, ClaimsPrincipal, SecurityToken) ValidateToken(
+        public (bool, ClaimsPrincipal?, SecurityToken?) ValidateToken(
             string token,
-            TokenValidationParameters parameters, Action<Exception> onError,
-            Action<SecurityTokenExpiredException> onExpired)
+            TokenValidationParameters parameters, Action<Exception>? onError,
+            Action<SecurityTokenExpiredException>? onExpired)
         {
             try
             {
