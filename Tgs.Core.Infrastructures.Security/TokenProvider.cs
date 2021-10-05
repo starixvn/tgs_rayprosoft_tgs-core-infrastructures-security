@@ -4,13 +4,6 @@ using Tgs.Core.Infrastructures.Security.Enums;
 
 namespace Tgs.Core.Infrastructures.Security
 {
-    public interface ITokenProvider
-    {
-        Task<string> EncryptAsync<T>(T data);
-
-        Task<T> DecryptAsync<T>(string token);
-    }
-
     public sealed class TokenProvider : ITokenProvider
     {
         private static readonly string _iv = "37F8BF8F8EA48FD2";
@@ -30,14 +23,14 @@ namespace Tgs.Core.Infrastructures.Security
             };
         }
 
-        public async Task<T> DecryptAsync<T>(string token)
+        public async ValueTask<T> DecryptAsync<T>(string token)
         {
             var value = await _cryptoProvider.DecryptStringAsync(token, _iv, _key);
 
             return JsonSerializer.Deserialize<T>(value, _options);
         }
 
-        public Task<string> EncryptAsync<T>(T data)
+        public ValueTask<string> EncryptAsync<T>(T data)
         {
             var value = JsonSerializer.Serialize(data, _options);
 

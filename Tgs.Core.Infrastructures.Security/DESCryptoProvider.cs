@@ -10,12 +10,12 @@ namespace Tgs.Core.Infrastructures.Security
 {
     internal sealed class DESCryptoProvider : ISymmetricCryptoProvider
     {
-        public async Task<string> DecryptStringAsync(
+        public async ValueTask<string> DecryptStringAsync(
             string encrypted,
             string iv,
             string key,
             CipherMode mode,
-            PaddingMode padding, Encoding encoding)
+            PaddingMode padding, Encoding? encoding)
         {
             if (string.IsNullOrEmpty(encrypted))
             {
@@ -39,16 +39,16 @@ namespace Tgs.Core.Infrastructures.Security
             await using var cs = new CryptoStream(ms, ct, CryptoStreamMode.Write);
 
             var bytes = Convert.FromBase64String(encrypted);
-            await cs.WriteAsync(bytes.AsMemory(0, bytes.Length));
-            await cs.FlushFinalBlockAsync();
+            await cs.WriteAsync(bytes.AsMemory(0, bytes.Length)).ConfigureAwait(false);
+            await cs.FlushFinalBlockAsync().ConfigureAwait(false);
 
             return encoding.GetString(ms.ToArray());
         }
 
-        public async Task<string> EncryptStringAsync(
+        public async ValueTask<string> EncryptStringAsync(
             string original, string iv, string key,
             CipherMode mode,
-            PaddingMode padding, Encoding encoding)
+            PaddingMode padding, Encoding? encoding)
         {
             if (string.IsNullOrEmpty(original))
             {
@@ -72,8 +72,8 @@ namespace Tgs.Core.Infrastructures.Security
             await using var cs = new CryptoStream(ms, ct, CryptoStreamMode.Write);
 
             var bytes = encoding.GetBytes(original);
-            await cs.WriteAsync(bytes.AsMemory(0, bytes.Length));
-            await cs.FlushFinalBlockAsync();
+            await cs.WriteAsync(bytes.AsMemory(0, bytes.Length)).ConfigureAwait(false);
+            await cs.FlushFinalBlockAsync().ConfigureAwait(false);
 
             return Convert.ToBase64String(ms.ToArray());
         }

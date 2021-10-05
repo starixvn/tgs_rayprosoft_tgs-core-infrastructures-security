@@ -4,11 +4,6 @@ using Tgs.Core.Infrastructures.Security.Enums;
 
 namespace Tgs.Core.Infrastructures.Security
 {
-    public interface ISymmetricCryptoProviderFactory
-    {
-        ISymmetricCryptoProvider GetProvider(SymmetricAlgorithmKind algorithm);
-    }
-
     public sealed class SymmetricCryptoProviderFactory : ISymmetricCryptoProviderFactory
     {
         private readonly IServiceProvider _serviceProvider;

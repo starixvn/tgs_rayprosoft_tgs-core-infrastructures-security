@@ -7,17 +7,6 @@ using Tgs.Core.Infrastructures.Security.Extensions;
 
 namespace Tgs.Core.Infrastructures.Security
 {
-    public interface IHashProvider
-    {
-        string Hash(
-            string plainText, HashAlgorithmKind algorithm = HashAlgorithmKind.Sha512,
-            HashStringKind kind = HashStringKind.Hex, Encoding encoding = null);
-
-        byte[] Hash(byte[] data, byte[] salt, HashAlgorithmKind algorithm = HashAlgorithmKind.Sha512);
-
-        byte[] Hash(byte[] data);
-    }
-
     public sealed class HashProvider : IHashProvider
     {
         private static readonly IDictionary<HashAlgorithmKind, Func<HashAlgorithm>> _AlgByKind =
@@ -40,7 +29,7 @@ namespace Tgs.Core.Infrastructures.Security
             _hashProvider = this;
         }
 
-        public string Hash(string plainText, HashAlgorithmKind algorithm, HashStringKind kind, Encoding encoding)
+        public string Hash(string plainText, HashAlgorithmKind algorithm, HashStringKind kind, Encoding? encoding)
         {
             encoding ??= Encoding.UTF8;
 
