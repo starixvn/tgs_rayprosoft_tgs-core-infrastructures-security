@@ -8,9 +8,10 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2BC740B2-B9E1-4C74-A265-4AEEE394F68A}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		NuGet.config = NuGet.config
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tgs.Core.Infrastructures.Security.Tests", "Tgs.Core.Infrastructures.Security.Tests\Tgs.Core.Infrastructures.Security.Tests.csproj", "{2E798FBD-741D-4CBA-A3B0-CAF3BE269DE9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tgs.Core.Infrastructures.Security.Tests", "Tgs.Core.Infrastructures.Security.Tests\Tgs.Core.Infrastructures.Security.Tests.csproj", "{2E798FBD-741D-4CBA-A3B0-CAF3BE269DE9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

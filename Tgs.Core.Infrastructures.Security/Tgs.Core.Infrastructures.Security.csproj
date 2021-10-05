@@ -1,8 +1,15 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <Nullable>enable</Nullable>
+    <Version>0.0.1</Version>
+    <Authors>Raypro</Authors>
+    <IsPackable>true</IsPackable>
+    <PackageProjectUrl>https://gitlab.com/rayprosoft/tgs-core-infrastructures-security</PackageProjectUrl>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://gitlab.com/rayprosoft/tgs-core-infrastructures-security.git</RepositoryUrl>
+    <PackageTags>tgs infrastructure security</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
