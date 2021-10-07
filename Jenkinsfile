@@ -8,7 +8,13 @@ pipeline {
 	stages {
 		stage('Build') {
 			steps {
-				sh "dotnet build -c $BuildConfiguration"
+				sh 'dotnet build -c $BuildConfiguration'
+			}
+		}
+		
+		stage('Test') {
+			steps {
+				sh 'dotnet test -c $BuildConfiguration --logger trx --no-build'
 			}
 		}
 		
@@ -19,4 +25,10 @@ pipeline {
 			}
 		}
 	}
+	
+	 post {
+        always {
+            step([$class: 'MSTestPublisher', testResultsFile:"**/*.trx", failOnError: false, keepLongStdio: true])
+        }
+    }
 }
