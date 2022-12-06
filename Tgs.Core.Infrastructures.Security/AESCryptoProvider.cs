@@ -24,13 +24,11 @@ internal sealed class AESCryptoProvider : ISymmetricCryptoProvider
 
         encoding ??= Encoding.UTF8;
 
-        using var aes = new AesCryptoServiceProvider
-        {
-            IV = encoding.GetBytes(iv),
-            Key = encoding.GetBytes(key),
-            Mode = mode,
-            Padding = padding
-        };
+        using var aes = Aes.Create();
+        aes.IV = encoding.GetBytes(iv);
+        aes.Key = encoding.GetBytes(key);
+        aes.Mode = mode;
+        aes.Padding = padding;
 
         using var ct = aes.CreateDecryptor();
         await using var ms = new MemoryStream();
@@ -56,13 +54,11 @@ internal sealed class AESCryptoProvider : ISymmetricCryptoProvider
 
         encoding ??= Encoding.UTF8;
 
-        using var aes = new AesCryptoServiceProvider
-        {
-            IV = encoding.GetBytes(iv),
-            Key = encoding.GetBytes(key),
-            Mode = mode,
-            Padding = padding
-        };
+        using var aes = Aes.Create();
+        aes.IV = encoding.GetBytes(iv);
+        aes.Key = encoding.GetBytes(key);
+        aes.Mode = mode;
+        aes.Padding = padding;
 
         using var ct = aes.CreateEncryptor();
         await using var ms = new MemoryStream();

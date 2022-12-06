@@ -12,11 +12,11 @@ public sealed class HashProvider : IHashProvider
     private static readonly IDictionary<HashAlgorithmKind, Func<HashAlgorithm>> _AlgByKind =
         new Dictionary<HashAlgorithmKind, Func<HashAlgorithm>>
         {
-            [HashAlgorithmKind.Md5] = () => new MD5CryptoServiceProvider(),
-            [HashAlgorithmKind.Sha1] = () => new SHA1CryptoServiceProvider(),
-            [HashAlgorithmKind.Sha256] = () => new SHA256Managed(),
-            [HashAlgorithmKind.Sha384] = () => new SHA384Managed(),
-            [HashAlgorithmKind.Sha512] = () => new SHA512Managed()
+            [HashAlgorithmKind.Md5] = MD5.Create,
+            [HashAlgorithmKind.Sha1] = SHA1.Create,
+            [HashAlgorithmKind.Sha256] = SHA256.Create,
+            [HashAlgorithmKind.Sha384] = SHA384.Create,
+            [HashAlgorithmKind.Sha512] = SHA512.Create
         };
 
     private static readonly byte[] _Salt =
@@ -45,7 +45,7 @@ public sealed class HashProvider : IHashProvider
         return kind switch
         {
             HashStringKind.Base64 => hash.ToBase64String(),
-            _                     => hash.ToHexString()
+            _ => hash.ToHexString()
         };
     }
 

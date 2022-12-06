@@ -8,11 +8,12 @@ namespace Tgs.Core.Infrastructures.Security;
 public sealed class PasswordHandler : IPasswordHandler
 {
     private readonly IHashProvider _hashProvider;
-    private readonly RNGCryptoServiceProvider _randomGenerator = new();
+    private readonly RandomNumberGenerator _randomNumberGenerator;
 
     public PasswordHandler(IHashProvider hashProvider)
     {
         _hashProvider = hashProvider;
+        _randomNumberGenerator = RandomNumberGenerator.Create();
     }
 
     public (byte[] Salt, byte[] HashedPassword) GenerateCredential(string password)
@@ -45,7 +46,7 @@ public sealed class PasswordHandler : IPasswordHandler
         }
 
         var bytes = new byte[length];
-        _randomGenerator.GetNonZeroBytes(bytes);
+        _randomNumberGenerator.GetNonZeroBytes(bytes);
 
         return bytes;
     }

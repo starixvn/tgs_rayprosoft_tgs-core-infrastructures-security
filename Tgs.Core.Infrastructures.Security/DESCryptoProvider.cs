@@ -26,13 +26,11 @@ internal sealed class DESCryptoProvider : ISymmetricCryptoProvider
 
         encoding ??= Encoding.UTF8;
 
-        using var des = new DESCryptoServiceProvider
-        {
-            IV = encoding.GetBytes(iv),
-            Key = encoding.GetBytes(key),
-            Mode = mode,
-            Padding = padding
-        };
+        using var des = DES.Create();
+        des.IV = encoding.GetBytes(iv);
+        des.Key = encoding.GetBytes(key);
+        des.Mode = mode;
+        des.Padding = padding;
 
         using var ct = des.CreateDecryptor();
         await using var ms = new MemoryStream();
@@ -59,13 +57,11 @@ internal sealed class DESCryptoProvider : ISymmetricCryptoProvider
 
         encoding ??= Encoding.UTF8;
 
-        using var des = new DESCryptoServiceProvider
-        {
-            IV = encoding.GetBytes(iv),
-            Key = encoding.GetBytes(key),
-            Mode = mode,
-            Padding = padding
-        };
+        using var des = DES.Create();
+        des.IV = encoding.GetBytes(iv);
+        des.Key = encoding.GetBytes(key);
+        des.Mode = mode;
+        des.Padding = padding;
 
         using var ct = des.CreateEncryptor();
         await using var ms = new MemoryStream();
