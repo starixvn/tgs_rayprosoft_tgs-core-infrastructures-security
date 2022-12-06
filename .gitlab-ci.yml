@@ -1,0 +1,57 @@
+variables:
+  BuildCacheKey: Infrastructure.Security.$CI_PINELINE_IID
+
+stages:
+  - build
+  - test
+  - publish
+
+build-code:
+  stage: build
+  script:
+    - dotnet build -c $BuildConfiguration
+  only:
+    - merge_requests
+    - main
+  cache:
+    key: $BuildCacheKey
+    untracked: true
+
+unit-test:
+  stage: test
+  script:
+    - dotnet test -c $BuildConfiguration -l:"junit;LogFilePath=../TestReports/{assembly}-TestReport.xml" --no-restore --no-build
+  needs:
+    - build-code
+  only:
+    - merge_requests
+    - main
+  cache:
+    key: $BuildCacheKey
+    untracked: true
+    policy: pull
+  artifacts:
+    when: always
+    reports:
+      junit: ./TestReports/*-TestReport.xml
+
+push-nuget:
+  stage: publish
+  script: 
+    - dotnet pack Tgs.Core.Infrastructures.Security/Tgs.Core.Infrastructures.Security.csproj --no-build --no-restore
+    - dotnet nuget push Tgs.Core.Infrastructures.Security/bin/$BuildConfiguration/*.nupkg -s raypro-baget -k $NugetApiKey --skip-duplicate
+  needs:
+    - build-code
+    - unit-test
+  only:
+    - main
+  cache:
+    key: $BuildCacheKey
+    policy: pull
+    untracked: false
+  artifacts:
+    name: Nuget
+    untracked: false
+    expire_in: "30 days"
+    paths:
+      - Tgs.Core.Infrastructures.Security/bin/$BuildConfiguration/*.nupkg
