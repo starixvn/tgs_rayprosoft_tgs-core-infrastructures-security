@@ -33,7 +33,7 @@ unit-test:
   artifacts:
     when: always
     reports:
-      junit: ../TestReports/*-TestReport.xml
+      junit: ./TestReports/*-TestReport.xml
 
 push-nuget:
   stage: publish
@@ -55,4 +55,3 @@ push-nuget:
     expire_in: "30 days"
     paths:
       - Tgs.Core.Infrastructures.Security/bin/$BuildConfiguration/*.nupkg
-
