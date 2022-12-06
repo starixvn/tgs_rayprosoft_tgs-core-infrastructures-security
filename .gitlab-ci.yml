@@ -28,8 +28,8 @@ unit-test:
     - main
   cache:
     key: $BuildCacheKey
+    untracked: true
     policy: pull
-    untracked: false
   artifacts:
     when: always
     reports:
