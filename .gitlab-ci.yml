@@ -48,7 +48,7 @@ push-nuget:
   cache:
     key: $BuildCacheKey
     policy: pull
-    untracked: false
+    untracked: true
   artifacts:
     name: Nuget
     untracked: false
