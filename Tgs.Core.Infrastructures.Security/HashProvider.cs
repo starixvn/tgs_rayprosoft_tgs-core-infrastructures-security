@@ -5,58 +5,57 @@ using System.Text;
 using Tgs.Core.Infrastructures.Security.Enums;
 using Tgs.Core.Infrastructures.Security.Extensions;
 
-namespace Tgs.Core.Infrastructures.Security
+namespace Tgs.Core.Infrastructures.Security;
+
+public sealed class HashProvider : IHashProvider
 {
-    public sealed class HashProvider : IHashProvider
+    private static readonly IDictionary<HashAlgorithmKind, Func<HashAlgorithm>> _AlgByKind =
+        new Dictionary<HashAlgorithmKind, Func<HashAlgorithm>>
+        {
+            [HashAlgorithmKind.Md5] = () => new MD5CryptoServiceProvider(),
+            [HashAlgorithmKind.Sha1] = () => new SHA1CryptoServiceProvider(),
+            [HashAlgorithmKind.Sha256] = () => new SHA256Managed(),
+            [HashAlgorithmKind.Sha384] = () => new SHA384Managed(),
+            [HashAlgorithmKind.Sha512] = () => new SHA512Managed()
+        };
+
+    private static readonly byte[] _Salt =
+        BinaryUtil.HexStringToBytes("6AE11BCBF9169EEE6B6A936B16E2B7F0613192927F1E678F7D18D3653FC3CE11");
+
+    private readonly IHashProvider _hashProvider;
+
+    public HashProvider()
     {
-        private static readonly IDictionary<HashAlgorithmKind, Func<HashAlgorithm>> _AlgByKind =
-            new Dictionary<HashAlgorithmKind, Func<HashAlgorithm>>
-            {
-                [HashAlgorithmKind.Md5] = () => new MD5CryptoServiceProvider(),
-                [HashAlgorithmKind.Sha1] = () => new SHA1CryptoServiceProvider(),
-                [HashAlgorithmKind.Sha256] = () => new SHA256Managed(),
-                [HashAlgorithmKind.Sha384] = () => new SHA384Managed(),
-                [HashAlgorithmKind.Sha512] = () => new SHA512Managed()
-            };
-
-        private static readonly byte[] _Salt =
-            BinaryUtil.HexStringToBytes("6AE11BCBF9169EEE6B6A936B16E2B7F0613192927F1E678F7D18D3653FC3CE11");
-
-        private readonly IHashProvider _hashProvider;
-
-        public HashProvider()
-        {
-            _hashProvider = this;
-        }
-
-        public string Hash(string plainText, HashAlgorithmKind algorithm, HashStringKind kind, Encoding? encoding)
-        {
-            encoding ??= Encoding.UTF8;
-
-            if (!_AlgByKind.TryGetValue(algorithm, out var func))
-            {
-                throw new ArgumentException($"Unknown hash algorithm {algorithm}");
-            }
-
-            var data = encoding.GetBytes(plainText);
-
-            var hash = func().ComputeHash(data);
-
-            return kind switch
-            {
-                HashStringKind.Base64 => hash.ToBase64String(),
-                _                     => hash.ToHexString()
-            };
-        }
-
-        public byte[] Hash(byte[] data, byte[] salt, HashAlgorithmKind algorithm) =>
-            _AlgByKind.TryGetValue(algorithm, out var func)
-                ? func().ComputeHash(BinaryUtil.ConcatenateBytes(salt, data))
-                : throw new ArgumentException($"Unknown hash algorithm {algorithm}");
-
-        /// <summary>
-        /// Hash using default salt and algorithm
-        /// </summary>
-        public byte[] Hash(byte[] data) => _hashProvider.Hash(data, _Salt);
+        _hashProvider = this;
     }
+
+    public string Hash(string plainText, HashAlgorithmKind algorithm, HashStringKind kind, Encoding? encoding)
+    {
+        encoding ??= Encoding.UTF8;
+
+        if (!_AlgByKind.TryGetValue(algorithm, out var func))
+        {
+            throw new ArgumentException($"Unknown hash algorithm {algorithm}");
+        }
+
+        var data = encoding.GetBytes(plainText);
+
+        var hash = func().ComputeHash(data);
+
+        return kind switch
+        {
+            HashStringKind.Base64 => hash.ToBase64String(),
+            _                     => hash.ToHexString()
+        };
+    }
+
+    public byte[] Hash(byte[] data, byte[] salt, HashAlgorithmKind algorithm) =>
+        _AlgByKind.TryGetValue(algorithm, out var func)
+            ? func().ComputeHash(BinaryUtil.ConcatenateBytes(salt, data))
+            : throw new ArgumentException($"Unknown hash algorithm {algorithm}");
+
+    /// <summary>
+    /// Hash using default salt and algorithm
+    /// </summary>
+    public byte[] Hash(byte[] data) => _hashProvider.Hash(data, _Salt);
 }

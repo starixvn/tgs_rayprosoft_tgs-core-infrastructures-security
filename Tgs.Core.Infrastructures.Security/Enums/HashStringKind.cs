@@ -1,8 +1,7 @@
-﻿namespace Tgs.Core.Infrastructures.Security.Enums
+﻿namespace Tgs.Core.Infrastructures.Security.Enums;
+
+public enum HashStringKind
 {
-    public enum HashStringKind
-    {
-        Hex,
-        Base64
-    }
+    Hex,
+    Base64
 }

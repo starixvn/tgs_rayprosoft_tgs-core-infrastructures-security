@@ -1,9 +1,8 @@
-﻿namespace Tgs.Core.Infrastructures.Security.Enums
+﻿namespace Tgs.Core.Infrastructures.Security.Enums;
+
+public enum SymmetricAlgorithmKind
 {
-    public enum SymmetricAlgorithmKind
-    {
-        AES,
-        AESBase62,
-        DES
-    }
+    AES,
+    AESBase62,
+    DES
 }

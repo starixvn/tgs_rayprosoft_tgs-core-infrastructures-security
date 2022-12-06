@@ -1,11 +1,10 @@
-﻿namespace Tgs.Core.Infrastructures.Security.Enums
+﻿namespace Tgs.Core.Infrastructures.Security.Enums;
+
+public enum HashAlgorithmKind
 {
-    public enum HashAlgorithmKind
-    {
-        Md5,
-        Sha1,
-        Sha256,
-        Sha384,
-        Sha512
-    }
+    Md5,
+    Sha1,
+    Sha256,
+    Sha384,
+    Sha512
 }
