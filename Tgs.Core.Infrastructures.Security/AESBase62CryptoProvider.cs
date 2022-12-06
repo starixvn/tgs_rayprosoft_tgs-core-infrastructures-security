@@ -7,80 +7,75 @@ using System.Text;
 using System.Threading.Tasks;
 using Tgs.Core.Infrastructures.Security.Extensions;
 
-namespace Tgs.Core.Infrastructures.Security
+namespace Tgs.Core.Infrastructures.Security;
+
+internal sealed class AESBase62CryptoProvider : ISymmetricCryptoProvider
 {
-    internal sealed class AESBase62CryptoProvider : ISymmetricCryptoProvider
+    public async ValueTask<string> DecryptStringAsync(
+        string encrypted, string iv, string key,
+        CipherMode mode, PaddingMode padding, Encoding? encoding)
     {
-        public async ValueTask<string> DecryptStringAsync(
-            string encrypted, string iv, string key,
-            CipherMode mode, PaddingMode padding, Encoding? encoding)
+        if (string.IsNullOrEmpty(encrypted))
         {
-            if (string.IsNullOrEmpty(encrypted))
-            {
-                return encrypted;
-            }
-
-            ValidateIVAndKey(iv, key);
-
-            encoding ??= Encoding.UTF8;
-
-            using var aes = new AesCryptoServiceProvider
-            {
-                IV = encoding.GetBytes(iv),
-                Key = encoding.GetBytes(key),
-                Mode = mode,
-                Padding = padding
-            };
-
-            using var ct = aes.CreateDecryptor();
-            await using var ms = new MemoryStream();
-            await using var cs = new CryptoStream(ms, ct, CryptoStreamMode.Write);
-
-            var bytes = encrypted.FromBase62();
-            await cs.WriteAsync(bytes.AsMemory(0, bytes.Length)).ConfigureAwait(false);
-            await cs.FlushFinalBlockAsync().ConfigureAwait(false);
-
-            return encoding.GetString(ms.ToArray());
+            return encrypted;
         }
 
-        public async ValueTask<string> EncryptStringAsync(
-            string original, string iv, string key,
-            CipherMode mode, PaddingMode padding, Encoding? encoding)
+        ValidateIVAndKey(iv, key);
+
+        encoding ??= Encoding.UTF8;
+
+        using var aes = Aes.Create();
+        aes.IV = encoding.GetBytes(iv);
+        aes.Key = encoding.GetBytes(key);
+        aes.Mode = mode;
+        aes.Padding = padding;
+
+        using var ct = aes.CreateDecryptor();
+        await using var ms = new MemoryStream();
+        await using var cs = new CryptoStream(ms, ct, CryptoStreamMode.Write);
+
+        var bytes = encrypted.FromBase62();
+        await cs.WriteAsync(bytes.AsMemory(0, bytes.Length)).ConfigureAwait(false);
+        await cs.FlushFinalBlockAsync().ConfigureAwait(false);
+
+        return encoding.GetString(ms.ToArray());
+    }
+
+    public async ValueTask<string> EncryptStringAsync(
+        string original, string iv, string key,
+        CipherMode mode, PaddingMode padding, Encoding? encoding)
+    {
+        if (string.IsNullOrEmpty(original))
         {
-            if (string.IsNullOrEmpty(original))
-            {
-                return original;
-            }
-
-            ValidateIVAndKey(iv, key);
-
-            encoding ??= Encoding.UTF8;
-
-            using var aes = new AesCryptoServiceProvider
-            {
-                IV = encoding.GetBytes(iv),
-                Key = encoding.GetBytes(key),
-                Mode = mode,
-                Padding = padding
-            };
-
-            using var ct = aes.CreateEncryptor();
-            await using var ms = new MemoryStream();
-            await using var cs = new CryptoStream(ms, ct, CryptoStreamMode.Write);
-
-            var bytes = encoding.GetBytes(original);
-            await cs.WriteAsync(bytes.AsMemory(0, bytes.Length)).ConfigureAwait(false);
-            await cs.FlushFinalBlockAsync().ConfigureAwait(false);
-
-            return ms.ToArray().ToBase62();
+            return original;
         }
 
-        private static void ValidateIVAndKey(string iv, string key)
+        ValidateIVAndKey(iv, key);
+
+        encoding ??= Encoding.UTF8;
+
+        using var aes = Aes.Create();
+        aes.IV = encoding.GetBytes(iv);
+        aes.Key = encoding.GetBytes(key);
+        aes.Mode = mode;
+        aes.Padding = padding;
+
+        using var ct = aes.CreateEncryptor();
+        await using var ms = new MemoryStream();
+        await using var cs = new CryptoStream(ms, ct, CryptoStreamMode.Write);
+
+        var bytes = encoding.GetBytes(original);
+        await cs.WriteAsync(bytes.AsMemory(0, bytes.Length)).ConfigureAwait(false);
+        await cs.FlushFinalBlockAsync().ConfigureAwait(false);
+
+        return ms.ToArray().ToBase62();
+    }
+
+    private static void ValidateIVAndKey(string iv, string key)
+    {
+        if (string.IsNullOrEmpty(iv) || string.IsNullOrEmpty(key))
         {
-            if (string.IsNullOrEmpty(iv) || string.IsNullOrEmpty(key))
-            {
-                throw new InvalidOperationException("IV and Key for AES should not be null or empty");
-            }
+            throw new InvalidOperationException("IV and Key for AES should not be null or empty");
         }
     }
 }

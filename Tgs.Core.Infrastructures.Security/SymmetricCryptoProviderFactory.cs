@@ -2,24 +2,23 @@
 using Microsoft.Extensions.DependencyInjection;
 using Tgs.Core.Infrastructures.Security.Enums;
 
-namespace Tgs.Core.Infrastructures.Security
+namespace Tgs.Core.Infrastructures.Security;
+
+public sealed class SymmetricCryptoProviderFactory : ISymmetricCryptoProviderFactory
 {
-    public sealed class SymmetricCryptoProviderFactory : ISymmetricCryptoProviderFactory
+    private readonly IServiceProvider _serviceProvider;
+
+    public SymmetricCryptoProviderFactory(IServiceProvider serviceProvider)
     {
-        private readonly IServiceProvider _serviceProvider;
-
-        public SymmetricCryptoProviderFactory(IServiceProvider serviceProvider)
-        {
-            _serviceProvider = serviceProvider;
-        }
-
-        public ISymmetricCryptoProvider GetProvider(SymmetricAlgorithmKind algorithm) =>
-            algorithm switch
-            {
-                SymmetricAlgorithmKind.DES       => _serviceProvider.GetRequiredService<DESCryptoProvider>(),
-                SymmetricAlgorithmKind.AESBase62 => _serviceProvider.GetRequiredService<AESBase62CryptoProvider>(),
-                SymmetricAlgorithmKind.AES       => _serviceProvider.GetRequiredService<AESCryptoProvider>(),
-                _                                => throw new NotImplementedException(nameof(algorithm))
-            };
+        _serviceProvider = serviceProvider;
     }
+
+    public ISymmetricCryptoProvider GetProvider(SymmetricAlgorithmKind algorithm) =>
+        algorithm switch
+        {
+            SymmetricAlgorithmKind.DES       => _serviceProvider.GetRequiredService<DESCryptoProvider>(),
+            SymmetricAlgorithmKind.AESBase62 => _serviceProvider.GetRequiredService<AESBase62CryptoProvider>(),
+            SymmetricAlgorithmKind.AES       => _serviceProvider.GetRequiredService<AESCryptoProvider>(),
+            _                                => throw new NotImplementedException(nameof(algorithm))
+        };
 }

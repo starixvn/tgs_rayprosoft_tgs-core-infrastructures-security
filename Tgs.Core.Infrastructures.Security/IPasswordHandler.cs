@@ -1,11 +1,10 @@
-﻿namespace Tgs.Core.Infrastructures.Security
+﻿namespace Tgs.Core.Infrastructures.Security;
+
+public interface IPasswordHandler
 {
-    public interface IPasswordHandler
-    {
-        (byte[] Salt, byte[] HashedPassword) GenerateCredential(string password);
+    (byte[] Salt, byte[] HashedPassword) GenerateCredential(string password);
 
-        bool Verify(byte[] existedPassword, byte[] existedSalt, string password);
+    bool Verify(byte[] existedPassword, byte[] existedSalt, string password);
 
-        byte[] GenerateRandomSalt(ushort length);
-    }
+    byte[] GenerateRandomSalt(ushort length);
 }
